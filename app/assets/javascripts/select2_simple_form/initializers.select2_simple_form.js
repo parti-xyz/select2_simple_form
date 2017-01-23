@@ -84,7 +84,15 @@ var Select2SimpleForm = (function($) {
           };
         },
         results: function (data, page) {
-          return { results: data };
+          if(data.results) {
+            var results = { results: data.results };
+            if(data.more) {
+              results['more'] = data.more;
+            }
+            return results;
+          } else {
+            return { results: data };
+          }
         }
       };
 
