@@ -75,7 +75,14 @@ var Select2SimpleForm = (function($) {
     // Check AJAX options
     if (options.ajax) {
       select2Options.ajax = {
-        url: options.ajax,
+        url: function() {
+          var function_name = options.ajax.replace('function:','');
+          if(options.ajax.startsWith('function:') && typeof window[function_name] === 'function') {
+            return window[function_name](JSON.parse(options.ajax_args) || {});
+          } else {
+            return options.ajax;
+          }
+        },
         dataType: 'json',
         quietMillis: 250,
         data: function (term, page) {
@@ -104,8 +111,17 @@ var Select2SimpleForm = (function($) {
       // it will use the first item, because selects only one element.
       select2Options.initSelection = function(element, callback) {
         var ids = sanitizeInputValues(element);
-        if (ids.length > 0) {
-          $.get(options.ajax, { id: ids })
+
+        var ajax_url = '';
+        var function_name = options.ajax.replace('function:','');
+        if(options.ajax.startsWith('function:') && typeof window[function_name] === 'function') {
+          ajax_url = window[function_name](JSON.parse(options.ajax_args) || {});
+        } else {
+          ajax_url = options.ajax;
+        }
+
+        if (ajax_url && ids.length > 0) {
+          $.get(ajax_url, { id: ids })
           .done(function(data) {
             if ( options.multiple ) {
               element.val('');
