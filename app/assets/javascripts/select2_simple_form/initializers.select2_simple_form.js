@@ -77,7 +77,7 @@ var Select2SimpleForm = (function($) {
       select2Options.ajax = {
         url: function() {
           var function_name = options.ajax.replace('function:','');
-          if(options.ajax.startsWith('function:') && typeof window[function_name] === 'function') {
+          if(options.ajax.indexOf('function:') === 0 && typeof window[function_name] === 'function') {
             return window[function_name](JSON.parse(options.ajax_args) || {});
           } else {
             return options.ajax;
@@ -114,7 +114,7 @@ var Select2SimpleForm = (function($) {
 
         var ajax_url = '';
         var function_name = options.ajax.replace('function:','');
-        if(options.ajax.startsWith('function:') && typeof window[function_name] === 'function') {
+        if(options.ajax.indexOf('function:') === 0 && typeof window[function_name] === 'function') {
           ajax_url = window[function_name](JSON.parse(options.ajax_args) || {});
         } else {
           ajax_url = options.ajax;
